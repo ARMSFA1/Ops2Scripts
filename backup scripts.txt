@@ -1,0 +1,48 @@
+__app to backup___
+
+#!/bin/sh
+
+#start copying 
+
+rsync -avze ssh /home/owncloud-backup student@10.25.137.133:/Backups/AppBackups
+
+echo "Done"
+
+
+__database to backup___
+
+#!/bin/sh
+
+#start copying
+
+rsync -avze ssh /SQLBackups/ student@10.25.137.133:/Backups/SQLBackups
+
+echo "Done"
+
+
+__backup to backup___
+
+#!/bin/sh
+
+#start copying
+
+rsync -O -avze ssh /home/student/Backups/AppBackups groupa@10.25.100.14:home/groupa/app/home
+rsync -O -avze ssh /home/student/Backups/SQLBackups groupa@10.25.100.14:home/groupa/db/home
+
+echo "Done"
+
+__sync.sh
+
+#!/bin/bash
+
+sudo rsync -avze ssh ~/SQLBackups/ student@10.25.137.133:/home/student/Backups/SQLBackups/
+
+__backupscript.sh
+
+#!/bin/bash
+
+#Sets current date in variable to use as a timestamp
+now=$(data +"%d-%m_%Y")
+
+#Runs the MYSQL dump command, stores the file in the SQLBackups directory with a daily timestamp
+sudo mysqldump -u root -p --all-databases > ~/SQLBackups/backup_$now.sql
